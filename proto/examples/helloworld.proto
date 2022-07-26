@@ -5,6 +5,8 @@ option go_package = "github.com/h-celel/proto-spoon/examples;examples";
 
 service Service {
   rpc Hello (HelloRequest) returns (HelloResponse) {}
+  rpc StreamingHello (Empty) returns (stream HelloResponse) {}
+  rpc BidiStream (stream HelloRequest) returns (stream HelloResponse) {}
 }
 
 message HelloRequest {
@@ -18,3 +20,5 @@ message HelloResponse {
 message Message {
   string value = 1;
 }
+
+message Empty {}
