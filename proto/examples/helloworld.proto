@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package helloworld;
+option go_package = "github.com/h-celel/proto-spoon/examples;examples";
 
 service Service {
   rpc Hello (HelloRequest) returns (HelloResponse) {}
