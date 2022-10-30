@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package auth;
+option go_package = "github.com/h-celel/proto-spoon/spoon/auth;auth";
+
+message JWT {
+  string value = 1;
+}

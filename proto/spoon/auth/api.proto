@@ -1,0 +1,152 @@
+syntax = "proto3";
+
+package auth;
+option go_package = "github.com/h-celel/proto-spoon/spoon/auth;auth";
+
+import "spoon/auth/token.proto";
+import "spoon/auth/user.proto";
+
+service AuthenticationSessionService {
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc Refresh(RefreshRequest) returns (RefreshResponse);
+}
+
+message LoginRequest {
+  string login_id = 1;
+  string password = 2;
+}
+message LoginResponse {
+  message LoginResponseError {
+    enum LoginResponseErrorType {
+      UNSPECIFIED = 0;
+      BAD_REQUEST = 1;
+    }
+    optional string message = 1;
+    LoginResponseErrorType type = 2;
+  }
+  message LoginResponseBody {
+    JWT access_token = 1;
+    JWT refresh_token = 2;
+  }
+  oneof response {
+    LoginResponseError response_error = 1;
+    LoginResponseBody response_body = 2;
+  }
+}
+
+message RefreshRequest {
+  JWT refresh_token = 1;
+}
+message RefreshResponse {
+  message LoginResponseError {
+    enum LoginResponseErrorType {
+      UNSPECIFIED = 0;
+      BAD_REQUEST = 1;
+    }
+    optional string message = 1;
+    LoginResponseErrorType type = 2;
+  }
+  message LoginResponseBody {
+    JWT access_token = 1;
+    JWT refresh_token = 2;
+  }
+  oneof response {
+    LoginResponseError response_error = 1;
+    LoginResponseBody response_body = 2;
+  }
+}
+
+service AuthenticationManagementService {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+}
+
+message CreateUserRequest {
+  string login_id = 1;
+  string password = 2;
+  optional string email = 3;
+}
+message CreateUserResponse {
+  message CreateUserResponseError {
+    enum CreateUserResponseErrorType {
+      UNSPECIFIED = 0;
+      BAD_REQUEST = 1;
+    }
+    optional string message = 1;
+    CreateUserResponseErrorType type = 2;
+  }
+  message CreateUserResponseBody {
+    User user = 1;
+  }
+  oneof response {
+    CreateUserResponseError response_error = 1;
+    CreateUserResponseBody response_body = 2;
+  }
+}
+message UpdateUserRequest {
+  User user = 1;
+}
+message UpdateUserResponse {
+  message UpdateUserResponseError {
+    enum UpdateUserResponseErrorType {
+      UNSPECIFIED = 0;
+      BAD_REQUEST = 1;
+      UNAUTHENTICATED = 2;
+      UNAUTHORIZED = 3;
+    }
+    optional string message = 1;
+    UpdateUserResponseErrorType type = 2;
+  }
+  message UpdateUserResponseBody {
+    User user = 1;
+  }
+  oneof response {
+    UpdateUserResponseError response_error = 1;
+    UpdateUserResponseBody response_body = 2;
+  }
+}
+message DeleteUserRequest {
+  string user_id = 1;
+}
+message DeleteUserResponse {
+  message DeleteUserResponseError {
+    enum DeleteUserResponseErrorType {
+      UNSPECIFIED = 0;
+      BAD_REQUEST = 1;
+      UNAUTHENTICATED = 2;
+      UNAUTHORIZED = 3;
+    }
+    optional string message = 1;
+    DeleteUserResponseErrorType type = 2;
+  }
+  message DeleteUserResponseBody {}
+  oneof response {
+    DeleteUserResponseError response_error = 1;
+    DeleteUserResponseBody response_body = 2;
+  }
+}
+
+service AuthenticationAuditService {
+  rpc GetPublicKey(GetPublicKeyRequest) returns (GetPublicKeyResponse);
+}
+
+message GetPublicKeyRequest {}
+message GetPublicKeyResponse {
+  message GetPublicKeyResponseError {
+    enum GetPublicKeyResponseErrorType {
+      UNSPECIFIED = 0;
+      UNAUTHENTICATED = 1;
+      UNAUTHORIZED = 2;
+    }
+    optional string message = 1;
+    GetPublicKeyResponseErrorType type = 2;
+  }
+  message GetPublicKeyResponseBody {
+    bytes public_key = 1;
+  }
+  oneof response {
+    GetPublicKeyResponseError response_error = 1;
+    GetPublicKeyResponseBody response_body = 2;
+  }
+}
